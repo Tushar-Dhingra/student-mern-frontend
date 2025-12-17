@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { studentAPI, authAPI } from '../utils/api';
 import Navbar from '../components/Navbar';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import toast, { Toaster } from 'react-hot-toast';
 import ChangePassword from '../components/ChangePassword';
 
 const StudentDashboard = () => {
@@ -248,7 +247,7 @@ const StudentDashboard = () => {
           <ChangePassword onClose={() => setShowChangePassword(false)} />
         )}
       </div>
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 };

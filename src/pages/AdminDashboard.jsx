@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { studentAPI, authAPI } from '../utils/api';
 import Navbar from '../components/Navbar';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import toast, { Toaster } from 'react-hot-toast';
 
 const AdminDashboard = () => {
   const [students, setStudents] = useState([]);
@@ -297,7 +296,7 @@ const AdminDashboard = () => {
           </div>
         )}
       </div>
-      <ToastContainer />
+      <Toaster />
     </div>
   );
 };
