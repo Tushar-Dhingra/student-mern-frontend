@@ -7,6 +7,20 @@ const api = axios.create({
   withCredentials: true,
 });
 
+// Add request interceptor
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Auth API calls
 export const authAPI = {
   signup: (userData) => api.post('/auth/signup', userData),
@@ -21,7 +35,7 @@ export const authAPI = {
 
 // Student API calls
 export const studentAPI = {
-  getAll: () => api.get('/students'),
+  getAll: (page = 1, limit = 10) => api.get(`/students?page=${page}&limit=${limit}`),
   getProfile: (id) => api.get(`/students/profile/${id || ''}`),
   create: (studentData) => api.post('/students', studentData),
   update: (id, studentData) => api.put(`/students/profile/${id || ''}`, studentData),

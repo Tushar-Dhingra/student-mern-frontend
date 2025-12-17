@@ -39,6 +39,9 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authAPI.login(credentials);
       setUser(response.data.user);
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+      }
       return response.data;
     } catch (error) {
       if (error.response?.data?.message === 'Please verify your email before logging in') {
@@ -53,13 +56,20 @@ export const AuthProvider = ({ children }) => {
     // Only set user if admin (auto-verified) or already verified
     if (response.data.user.role === 'admin' || response.data.user.isVerified) {
       setUser(response.data.user);
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+      }
     }
     return response.data;
   };
 
   const logout = async () => {
-    await authAPI.logout();
-    setUser(null);
+    try {
+      await authAPI.logout();
+    } finally {
+      setUser(null);
+      localStorage.removeItem('token');
+    }
   };
 
   const value = {
