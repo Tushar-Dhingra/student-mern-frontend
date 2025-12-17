@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { studentAPI } from '../utils/api';
+import { studentAPI, authAPI } from '../utils/api';
 import Navbar from '../components/Navbar';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AdminDashboard = () => {
   const [students, setStudents] = useState([]);
@@ -134,9 +136,32 @@ const AdminDashboard = () => {
                     </div>
                     <p className="text-sm text-gray-600">{student.email}</p>
                     <p className="text-sm text-gray-600">Course: {student.course}</p>
-                    <p className="text-sm text-gray-500">
-                      Enrolled: {new Date(student.enrollmentDate).toLocaleDateString()}
-                    </p>
+                    <div className="mt-2 flex items-center space-x-4">
+                      <p className="text-sm text-gray-500">
+                        Enrolled: {new Date(student.enrollmentDate).toLocaleDateString()}
+                      </p>
+                      {student.userId && (
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${student.userId.isVerified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                          }`}>
+                          {student.userId.isVerified ? 'Verified' : 'Not Verified'}
+                        </span>
+                      )}
+                      {student.userId && !student.userId.isVerified && (
+                        <button
+                          onClick={async () => {
+                            try {
+                              await authAPI.resendVerification(student.userId.email);
+                              toast.success(`Verification email sent to ${student.name}`);
+                            } catch (err) {
+                              toast.error('Failed to send email');
+                            }
+                          }}
+                          className="text-xs text-blue-600 hover:text-blue-900 font-medium"
+                        >
+                          Send Verification
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </li>
@@ -272,6 +297,7 @@ const AdminDashboard = () => {
           </div>
         )}
       </div>
+      <ToastContainer />
     </div>
   );
 };
